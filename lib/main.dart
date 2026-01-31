@@ -1,0 +1,20 @@
+import 'package:flutter/material.dart';
+import 'package:turnly_app/home_screen.dart';
+
+void main() {
+  runApp(const TurnlyApp());
+}
+
+class TurnlyApp extends StatelessWidget {
+  const TurnlyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Turnly',
+      debugShowCheckedModeBanner: false,
+      home: const HomeScreen(),
+    );
+  }
+}
+
