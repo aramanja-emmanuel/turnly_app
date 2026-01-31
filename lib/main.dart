@@ -17,4 +17,3 @@ class TurnlyApp extends StatelessWidget {
     );
   }
 }
-

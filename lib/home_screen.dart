@@ -28,6 +28,11 @@ class HomeScreen extends StatelessWidget {
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
+                    
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.settings),
                   ),
                   IconButton(
                     onPressed: () {},
@@ -50,6 +55,20 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 32),
 
               // Title
+              const Text(
+                'Welcome to Turnly',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const Text(
+                'Welcome to Turnly',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const Text(
                 'Welcome to Turnly',
                 style: TextStyle(
