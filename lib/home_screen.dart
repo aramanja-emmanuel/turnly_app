@@ -34,10 +34,6 @@ class HomeScreen extends StatelessWidget {
                     onPressed: () {},
                     icon: const Icon(Icons.settings),
                   ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.settings),
-                  ),
                 ],
               ),
               const SizedBox(height: 40),
@@ -46,7 +42,7 @@ class HomeScreen extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: Image.asset(
-                  'assets/turnly_image.png',
+                  'assets/images/turnlyimage1.PNG',
                   fit: BoxFit.cover,
                   height: 250,
                   width: double.infinity,
@@ -58,38 +54,22 @@ class HomeScreen extends StatelessWidget {
               const Text(
                 'Welcome to Turnly',
                 style: TextStyle(
-                  fontSize: 24,
+                  fontSize: 30,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const Text(
-                'Welcome to Turnly',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const Text(
-                'Welcome to Turnly',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 12),
-
               
+              const SizedBox(height: 12),
               const Text(
                 'Virtual queue management and instant notifications for a seamless service experience.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.grey,
+                  color: Colors.blueGrey,
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 60),
 
-              
               SizedBox(
                 width: double.infinity,
                 height: 50,

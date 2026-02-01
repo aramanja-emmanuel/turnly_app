@@ -11,7 +11,7 @@ class TurnlyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Turnly',
+      title: 'Turnly App',
       debugShowCheckedModeBanner: false,
       home: const HomeScreen(),
     );
