@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:turnly_app/details._screen.dart';
 import 'package:turnly_app/queue_screen.dart';
 
 void main() {
@@ -13,7 +14,7 @@ class TurnlyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Turnly App',
       debugShowCheckedModeBanner: false,
-      home: const QueueScreen(),
+      home: const DetailsScreen(),
     );
   }
 }
