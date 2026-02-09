@@ -70,14 +70,15 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       children: const [
                         Text(
                           'General Consultation',
-                          style: TextStyle(fontWeight: FontWeight.w600),
+                          style: TextStyle(fontSize: 20, 
+                          fontWeight: FontWeight.w600),
                         ),
                         SizedBox(height: 4),
                         Text(
                           'Downtown Health Center',
                           style: TextStyle(
                             color: Colors.deepPurpleAccent,
-                            fontSize: 12,
+                            fontSize: 15,
                           ),
                         ),
                       ],
@@ -108,9 +109,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     Text(
                       'CURRENT STATUS',
                       style: TextStyle(
-                        fontSize: 11,
+                        fontSize: 14,
                         letterSpacing: 1,
-                        color: Colors.blue,
+                        color: Colors.red,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -126,8 +127,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     Text(
                       'Your Turn Position',
                       style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.grey,
+                        fontSize: 12,
+                        color: Colors.deepPurpleAccent,
                       ),
                     ),
                   ],
@@ -152,13 +153,15 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       children: [
                         const Text(
                           'Queue Progress',
-                          style: TextStyle(fontWeight: FontWeight.w600),
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600),
                         ),
                         Text(
                           '$currentPosition of $totalPeople people',
                           style: const TextStyle(
                             fontSize: 12,
-                            color: Colors.grey,
+                            color: Colors.black87,
                           ),
                         ),
                       ],
@@ -181,8 +184,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     const Text(
                       'Updates automatically in real-time',
                       style: TextStyle(
-                        fontSize: 11,
-                        color: Colors.grey,
+                        fontSize: 12,
+                        color: Colors.deepOrangeAccent,
                       ),
                     ),
                   ],
@@ -250,7 +253,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         onPressed: () {
                           
                         },
-                        icon: const Icon(Icons.exit_to_app, color: Colors.red),
+                        icon: const Icon(Icons.exit_to_app_outlined, color: Colors.red),
                         label: const Text(
                           'Leave Queue',
                           style: TextStyle(color: Colors.red),
@@ -288,7 +291,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         ),
                         Switch(
                           value: alertEnabled,
-                          activeColor: Colors.blue,
+                          activeThumbColor: Colors.blue,
                           onChanged: (value) {
                             setState(() {
                               alertEnabled = value;
