@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:turnly_app/details._screen.dart';
 import 'package:turnly_app/status_screen.dart';
 
 void main() {
