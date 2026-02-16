@@ -1,6 +1,27 @@
+// import 'package:flutter/material.dart';
+// // import 'package:turnly_app/status_screen.dart';
+// import 'package:turnly_app/user_profile_screen.dart';
+
+// void main() {
+//   runApp(const TurnlyApp());
+// }
+
+// class TurnlyApp extends StatelessWidget {
+//   const TurnlyApp({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'Turnly App',
+//       debugShowCheckedModeBanner: false,
+//       home: const UserProfileScreen(),
+//     );
+//   }
+// }
+
+
 import 'package:flutter/material.dart';
-import 'package:turnly_app/status_screen.dart';
-import 'package:turnly_app/user_profile_screen.dart';
+import 'package:turnly_app/home_screen.dart';
 
 void main() {
   runApp(const TurnlyApp());
@@ -14,7 +35,38 @@ class TurnlyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Turnly App',
       debugShowCheckedModeBanner: false,
-      home: const UserProfileScreen(),
+      theme: lightTheme,
+      home: const HomeScreen(),
     );
   }
 }
+
+class AppColors {
+  static const primary = Color(0xFF0057D9);
+  static const secondary = Color(0xFF00BFA5);
+  static const background = Color(0xFFF5F5F5);
+}
+
+final ThemeData lightTheme = ThemeData(
+  useMaterial3: true,
+  scaffoldBackgroundColor: AppColors.background,
+  colorScheme: const ColorScheme.light(
+    primary: AppColors.primary,
+    secondary: AppColors.secondary,
+    surface: AppColors.background,
+  ),
+  appBarTheme: const AppBarTheme(
+    backgroundColor: AppColors.primary,
+    foregroundColor: Colors.white,
+    elevation: 0,
+  ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: AppColors.primary,
+      foregroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(12)),
+      ),
+    ),
+  ),
+);

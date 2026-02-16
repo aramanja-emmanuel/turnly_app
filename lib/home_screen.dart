@@ -1,9 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:turnly_app/main.dart';
-
-void main() {
-  runApp(const TurnlyApp());
-}
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -11,34 +6,23 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Turnly'),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.settings),
+          ),
+        ],
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const SizedBox(width: 24),
-                  const Text(
-                    'Turnly',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    
-                  ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.settings),
-                  ),
-                ],
-              ),
               const SizedBox(height: 40),
 
-              
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: Image.asset(
@@ -50,7 +34,6 @@ class HomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 35),
 
-              // Title
               const Text(
                 'Welcome to Turnly',
                 style: TextStyle(
@@ -58,8 +41,9 @@ class HomeScreen extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              
+
               const SizedBox(height: 12),
+
               const Text(
                 'Virtual queue management and instant notifications for a seamless service experience.',
                 textAlign: TextAlign.center,
@@ -68,6 +52,7 @@ class HomeScreen extends StatelessWidget {
                   color: Colors.blueGrey,
                 ),
               ),
+
               const SizedBox(height: 60),
 
               SizedBox(
@@ -75,21 +60,15 @@ class HomeScreen extends StatelessWidget {
                 height: 50,
                 child: ElevatedButton(
                   onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
                   child: const Text(
                     'Get Started',
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+                    style: TextStyle(fontSize: 16),
                   ),
                 ),
               ),
+
               const SizedBox(height: 16),
 
-              
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -99,14 +78,14 @@ class HomeScreen extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () {},
-                    child: const Text(
+                    child: Text(
                       'Log In',
                       style: TextStyle(
-                        color: Colors.blue,
+                        color: Theme.of(context).colorScheme.primary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ],
