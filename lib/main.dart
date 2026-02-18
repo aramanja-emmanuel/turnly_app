@@ -1,6 +1,5 @@
-
 import 'package:flutter/material.dart';
-import 'package:turnly_app/home_screen.dart';
+import 'home_screen.dart';
 
 void main() {
   runApp(const TurnlyApp());
@@ -12,7 +11,7 @@ class TurnlyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Turnly App',
+      title: 'Turnly',
       debugShowCheckedModeBanner: false,
       theme: lightTheme,
       home: const HomeScreen(),
@@ -32,18 +31,20 @@ final ThemeData lightTheme = ThemeData(
   colorScheme: const ColorScheme.light(
     primary: AppColors.primary,
     secondary: AppColors.secondary,
-    surface: AppColors.background,
+    surface: Colors.white,
   ),
   appBarTheme: const AppBarTheme(
     backgroundColor: AppColors.primary,
     foregroundColor: Colors.white,
+    centerTitle: true,
     elevation: 0,
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
       backgroundColor: AppColors.primary,
       foregroundColor: Colors.white,
-      shape: RoundedRectangleBorder(
+      minimumSize: const Size(double.infinity, 55),
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(12)),
       ),
     ),

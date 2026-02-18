@@ -6,45 +6,60 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Turnly'),
-        centerTitle: true,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 40),
+
+              /// Responsive Banner Image
               ClipRRect(
                 borderRadius: BorderRadius.circular(16),
                 child: Image.asset(
                   'assets/images/turnlyimage1.PNG',
-                  height: 250,
-                  width: double.infinity,
+                  width: screenWidth,
+                  height: screenWidth * 0.6,
                   fit: BoxFit.cover,
                 ),
               ),
+
               const SizedBox(height: 40),
+
+              /// Headline
               const Text(
                 'Welcome to Turnly',
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
                 ),
-                textAlign: TextAlign.center,
               ),
+
               const SizedBox(height: 16),
+
+              /// Description
               const Text(
                 'Virtual queue management and instant notifications for a seamless service experience.',
                 textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  height: 1.5,
+                ),
               ),
+
               const SizedBox(height: 60),
+
+              /// Get Started Button
               SizedBox(
                 width: double.infinity,
-                height: 55,
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.pushReplacement(
@@ -57,6 +72,7 @@ class HomeScreen extends StatelessWidget {
                   child: const Text('Get Started'),
                 ),
               ),
+
               const SizedBox(height: 20),
             ],
           ),
