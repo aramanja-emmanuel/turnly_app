@@ -2,296 +2,288 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
-/// =========================
+/// =============================
 /// QUEUE STATUS ENUM
-/// =========================
-enum QueueStatus {
-  waiting,
-  next,
-  arrived,
-  delayed,
-}
+/// =============================
+enum QueueStatus { waiting, next, arrived, delayed }
 
-/// =========================
+/// =============================
 /// QUEUE MODEL
-/// =========================
+/// =============================
 class QueueData {
   final String ticketNumber;
-  final String branchLocation;
-  final int counterNumber;
+  final String branch;
+  final int counter;
   final QueueStatus status;
 
   QueueData({
     required this.ticketNumber,
-    required this.branchLocation,
-    required this.counterNumber,
+    required this.branch,
+    required this.counter,
     required this.status,
   });
 
   QueueData copyWith({
     String? ticketNumber,
-    String? branchLocation,
-    int? counterNumber,
+    String? branch,
+    int? counter,
     QueueStatus? status,
   }) {
     return QueueData(
       ticketNumber: ticketNumber ?? this.ticketNumber,
-      branchLocation: branchLocation ?? this.branchLocation,
-      counterNumber: counterNumber ?? this.counterNumber,
+      branch: branch ?? this.branch,
+      counter: counter ?? this.counter,
       status: status ?? this.status,
     );
   }
 }
 
-/// =========================
-/// QUEUE PROVIDER
-/// =========================
-final queueProvider =
-    StateNotifierProvider<QueueNotifier, QueueData>((ref) {
-  return QueueNotifier();
-});
-
+/// =============================
+/// STATE NOTIFIER (Simulated Backend)
+/// =============================
 class QueueNotifier extends StateNotifier<QueueData> {
   QueueNotifier()
       : super(
           QueueData(
             ticketNumber: "#A-248",
-            branchLocation: "Downtown Branch",
-            counterNumber: 3,
-            status: QueueStatus.waiting,
+            branch: "Downtown Branch",
+            counter: 3,
+            status: QueueStatus.next, // simulate “Next”
           ),
         );
 
-  /// Simulate queue progressing to "Next"
-  void markAsNext() {
-    state = state.copyWith(status: QueueStatus.next);
-  }
-
-  /// User confirms arrival
   void confirmArrival() {
     state = state.copyWith(status: QueueStatus.arrived);
   }
 
-  /// User requests delay
   void requestDelay() {
     state = state.copyWith(
       status: QueueStatus.delayed,
-      counterNumber: state.counterNumber + 1, // simulate reassignment
+      counter: state.counter + 1,
+    );
+  }
+
+  void markAsNext(int counterNumber) {
+    state = state.copyWith(
+      status: QueueStatus.next,
+      counter: counterNumber,
     );
   }
 }
 
-/// =========================
+final queueProvider =
+    StateNotifierProvider<QueueNotifier, QueueData>((ref) {
+  return QueueNotifier();
+});
+
+/// =============================
 /// STATUS SCREEN
-/// =========================
+/// =============================
 class StatusScreen extends ConsumerWidget {
   const StatusScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final queue = ref.watch(queueProvider);
-
-    /// Auto-redirect when status becomes NEXT
-    if (queue.status == QueueStatus.next) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("It's your turn! Please proceed."),
-          ),
-        );
-      });
-    }
+    final notifier = ref.read(queueProvider.notifier);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF9FAFB),
+      backgroundColor: const Color(0xFFF3F4F6),
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
+        centerTitle: true,
         leading: IconButton(
-          icon:
-              const Icon(Icons.arrow_back_ios, size: 18, color: Colors.black),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded,
+              size: 18, color: Colors.black87),
           onPressed: () => Navigator.pop(context),
         ),
-        centerTitle: true,
         title: const Text(
-          'Queue Status',
+          "Queue Status",
           style: TextStyle(
-            color: Colors.black,
             fontSize: 16,
             fontWeight: FontWeight.w600,
+            color: Colors.black87,
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Column(
-          children: [
-            const SizedBox(height: 36),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            children: [
+              const SizedBox(height: 40),
 
-            /// Notification Badge
-            _buildBadge(queue.status),
-
-            const SizedBox(height: 28),
-
-            /// Headline
-            Text(
-              queue.status == QueueStatus.next
-                  ? "You're Next!"
-                  : queue.status == QueueStatus.arrived
-                      ? "Checked In"
-                      : queue.status == QueueStatus.delayed
-                          ? "Delay Requested"
-                          : "Waiting...",
-              style: const TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.w700,
-                color: Color(0xFF111827),
-              ),
-            ),
-
-            const SizedBox(height: 6),
-
-            /// Subheading (Dynamic Counter)
-            Text(
-              "Head to Counter ${queue.counterNumber}",
-              style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF2563EB),
-              ),
-            ),
-
-            const SizedBox(height: 14),
-
-            /// Description
-            const Text(
-              "Your turn has arrived. Please\nmake your way to the designated\nservice area now.\nOur representative is ready to\nassist you.",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14,
-                height: 1.55,
-                color: Color(0xFF6B7280),
-              ),
-            ),
-
-            const SizedBox(height: 28),
-
-            /// Ticket Info Card
-            Container(
-              width: double.infinity,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(14),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.04),
-                    blurRadius: 14,
-                    offset: const Offset(0, 6),
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  _infoRow('Ticket Number', queue.ticketNumber),
-                  const SizedBox(height: 14),
-                  _infoRow('Location', queue.branchLocation),
-                ],
-              ),
-            ),
-
-            const Spacer(),
-
-            /// PRIMARY CTA
-            if (queue.status == QueueStatus.next)
-              SizedBox(
-                width: double.infinity,
-                height: 54,
-                child: ElevatedButton(
-                  onPressed: () {
-                    ref.read(queueProvider.notifier).confirmArrival();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2563EB),
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+              /// ==========================
+              /// GREEN NOTIFICATION BADGE
+              /// ==========================
+              Container(
+                height: 110,
+                width: 110,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: const Color(0xFF22C55E).withOpacity(.15),
+                ),
+                child: Center(
+                  child: Container(
+                    height: 70,
+                    width: 70,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color(0xFF22C55E),
                     ),
-                  ),
-                  child: const Text(
-                    "I'm here",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+                    child: const Icon(
+                      Icons.notifications_rounded,
+                      size: 34,
                       color: Colors.white,
                     ),
                   ),
                 ),
               ),
 
-            const SizedBox(height: 18),
+              const SizedBox(height: 30),
 
-            /// SECONDARY ACTION
-            if (queue.status == QueueStatus.next)
-              TextButton(
-                onPressed: () {
-                  ref.read(queueProvider.notifier).requestDelay();
-                },
-                child: const Text(
-                  'Need more time?',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Color(0xFF6B7280),
-                  ),
+              /// ==========================
+              /// HEADLINE
+              /// ==========================
+              Text(
+                queue.status == QueueStatus.next
+                    ? "You're Next!"
+                    : queue.status == QueueStatus.arrived
+                        ? "You're Checked In"
+                        : queue.status == QueueStatus.delayed
+                            ? "Delay Requested"
+                            : "Waiting...",
+                style: const TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF111827),
                 ),
               ),
 
-            const SizedBox(height: 22),
-          ],
-        ),
-      ),
-    );
-  }
+              const SizedBox(height: 6),
 
-  Widget _buildBadge(QueueStatus status) {
-    Color innerColor;
-    IconData icon;
+              /// ==========================
+              /// SUBHEADING
+              /// ==========================
+              Text(
+                "Head to Counter ${queue.counter}",
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF2563EB),
+                ),
+              ),
 
-    switch (status) {
-      case QueueStatus.next:
-        innerColor = const Color(0xFF22C55E);
-        icon = Icons.notifications_none_rounded;
-        break;
-      case QueueStatus.arrived:
-        innerColor = Colors.blue;
-        icon = Icons.check_circle_outline;
-        break;
-      case QueueStatus.delayed:
-        innerColor = Colors.orange;
-        icon = Icons.schedule;
-        break;
-      default:
-        innerColor = Colors.grey;
-        icon = Icons.hourglass_empty;
-    }
+              const SizedBox(height: 18),
 
-    return Container(
-      height: 96,
-      width: 96,
-      decoration: const BoxDecoration(
-        shape: BoxShape.circle,
-        color: Color(0xFFE9F9EF),
-      ),
-      child: Center(
-        child: Container(
-          height: 56,
-          width: 56,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: innerColor,
+              /// ==========================
+              /// DESCRIPTION
+              /// ==========================
+              const Text(
+                "Your turn has arrived. Please\nmake your way to the\ndesignated service area now.\nOur representative is ready to\nassist you.",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  height: 1.6,
+                  color: Color(0xFF6B7280),
+                ),
+              ),
+
+              const SizedBox(height: 30),
+
+              /// ==========================
+              /// TICKET INFO CARD
+              /// ==========================
+              Container(
+                width: double.infinity,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(.05),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    _infoRow("Ticket Number", queue.ticketNumber),
+                    const SizedBox(height: 18),
+                    _infoRow("Location", queue.branch),
+                  ],
+                ),
+              ),
+
+              const Spacer(),
+
+              /// ==========================
+              /// PRIMARY BUTTON
+              /// ==========================
+              if (queue.status == QueueStatus.next)
+                SizedBox(
+                  width: double.infinity,
+                  height: 55,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      notifier.confirmArrival();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Arrival confirmed."),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.check_circle_outline,
+                        size: 20, color: Colors.white),
+                    label: const Text(
+                      "I'm here",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF2563EB),
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                  ),
+                ),
+
+              const SizedBox(height: 16),
+
+              /// ==========================
+              /// SECONDARY ACTION
+              /// ==========================
+              if (queue.status == QueueStatus.next)
+                TextButton(
+                  onPressed: () {
+                    notifier.requestDelay();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Delay request sent."),
+                      ),
+                    );
+                  },
+                  child: const Text(
+                    "Need more time?",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Color(0xFF6B7280),
+                    ),
+                  ),
+                ),
+
+              const SizedBox(height: 24),
+            ],
           ),
-          child: Icon(icon, color: Colors.white, size: 28),
         ),
       ),
     );
@@ -311,7 +303,7 @@ class StatusScreen extends ConsumerWidget {
         Text(
           value,
           style: const TextStyle(
-            fontSize: 14,
+            fontSize: 15,
             fontWeight: FontWeight.w700,
             color: Color(0xFF111827),
           ),

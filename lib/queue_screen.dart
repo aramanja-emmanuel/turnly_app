@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:turnly_app/status_screen.dart';
 
 class QueueScreen extends StatefulWidget {
   const QueueScreen({super.key});
@@ -178,53 +179,4 @@ class _QueueScreenState extends State<QueueScreen> {
 }
 
 //////////////////////////////////////////////////////////
-// STATUS SCREEN (When It's User's Turn)
-//////////////////////////////////////////////////////////
 
-class StatusScreen extends StatelessWidget {
-  const StatusScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Container(
-          padding: const EdgeInsets.all(24),
-          margin: const EdgeInsets.symmetric(horizontal: 30),
-          decoration: BoxDecoration(
-            color: Colors.blue,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: const Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.notifications_active,
-                color: Colors.white,
-                size: 50,
-              ),
-              SizedBox(height: 20),
-              Text(
-                'It\'s Your Turn!',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 10),
-              Text(
-                'Please proceed to the service desk.',
-                style: TextStyle(
-                  color: Colors.white70,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
