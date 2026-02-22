@@ -1,10 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class UserProfileScreen extends StatelessWidget {
+/// =====================================================
+/// USER MODEL
+/// =====================================================
+class UserModel {
+  final String fullName;
+  final String email;
+  final String memberSince;
+  final String profileImageUrl;
+
+  UserModel({
+    required this.fullName,
+    required this.email,
+    required this.memberSince,
+    required this.profileImageUrl,
+  });
+}
+
+/// =====================================================
+/// USER PROVIDER (Simulated Auth User)
+/// =====================================================
+final userProvider = Provider<UserModel>((ref) {
+  return UserModel(
+    fullName: "Alex Rivera",
+    email: "alex.rivera@email.com",
+    memberSince: "2023",
+    profileImageUrl: "https://i.pravatar.cc/300",
+  );
+});
+
+/// =====================================================
+/// USER PROFILE SCREEN
+/// =====================================================
+class UserProfileScreen extends ConsumerWidget {
   const UserProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(userProvider);
+
     return Scaffold(
       backgroundColor: const Color(0xFFF4F6F9),
       appBar: AppBar(
@@ -31,19 +66,40 @@ class UserProfileScreen extends StatelessWidget {
           children: [
             const SizedBox(height: 20),
 
-            // Profile Image
-            const CircleAvatar(
+            /// PROFILE IMAGE WITH LOADING + FALLBACK
+            CircleAvatar(
               radius: 45,
-              backgroundImage: NetworkImage(
-                "https://i.pravatar.cc/300",
+              backgroundColor: Colors.grey.shade200,
+              child: ClipOval(
+                child: Image.network(
+                  user.profileImageUrl,
+                  width: 90,
+                  height: 90,
+                  fit: BoxFit.cover,
+                  loadingBuilder: (context, child, progress) {
+                    if (progress == null) return child;
+                    return const SizedBox(
+                      width: 30,
+                      height: 30,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    );
+                  },
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(
+                      Icons.person,
+                      size: 40,
+                      color: Colors.grey,
+                    );
+                  },
+                ),
               ),
             ),
 
             const SizedBox(height: 12),
 
-            const Text(
-              "Alex Rivera",
-              style: TextStyle(
+            Text(
+              user.fullName,
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
@@ -51,21 +107,21 @@ class UserProfileScreen extends StatelessWidget {
 
             const SizedBox(height: 4),
 
-            const Text(
-              "alex.rivera@email.com",
-              style: TextStyle(color: Colors.grey),
+            Text(
+              user.email,
+              style: const TextStyle(color: Colors.grey),
             ),
 
             const SizedBox(height: 4),
 
-            const Text(
-              "Member since 2023",
-              style: TextStyle(color: Colors.grey),
+            Text(
+              "Member since ${user.memberSince}",
+              style: const TextStyle(color: Colors.grey),
             ),
 
             const SizedBox(height: 20),
 
-            // Stats Row
+            /// ================= STATS ROW =================
             Row(
               children: [
                 _statCard("24", "TOTAL VISITS"),
@@ -78,20 +134,19 @@ class UserProfileScreen extends StatelessWidget {
 
             const SizedBox(height: 25),
 
-            // Queue History
+            /// ================= QUEUE HISTORY =================
             _sectionTitle("Queue History"),
-
             const SizedBox(height: 10),
 
             _historyTile(
-              icon: Icons.local_hospital,
+              icon: Icons.account_balance,
               title: "City Hall Services",
               subtitle: "Completed • Wait time 15m",
               date: "Oct 24",
             ),
 
             _historyTile(
-              icon: Icons.medical_services,
+              icon: Icons.local_hospital,
               title: "Main Medical Center",
               subtitle: "Completed • Wait time 45m",
               date: "Oct 18",
@@ -99,9 +154,8 @@ class UserProfileScreen extends StatelessWidget {
 
             const SizedBox(height: 25),
 
-            // Account Settings
+            /// ================= ACCOUNT SETTINGS =================
             _sectionTitle("Account Settings"),
-
             const SizedBox(height: 10),
 
             _settingsTile("Notification Preferences"),
@@ -110,20 +164,27 @@ class UserProfileScreen extends StatelessWidget {
 
             const SizedBox(height: 25),
 
-            // Sign Out
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              decoration: BoxDecoration(
-                color: Colors.red.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Center(
-                child: Text(
-                  "Sign Out",
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.w600,
+            /// ================= SIGN OUT =================
+            GestureDetector(
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Signed out successfully")),
+                );
+              },
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                decoration: BoxDecoration(
+                  color: Colors.red.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Center(
+                  child: Text(
+                    "Sign Out",
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),
@@ -135,6 +196,8 @@ class UserProfileScreen extends StatelessWidget {
       ),
     );
   }
+
+  /// ================= HELPER WIDGETS =================
 
   Widget _statCard(String value, String label) {
     return Expanded(
@@ -217,8 +280,8 @@ class UserProfileScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w600)),
+                    style:
+                        const TextStyle(fontWeight: FontWeight.w600)),
                 const SizedBox(height: 4),
                 Text(
                   subtitle,
