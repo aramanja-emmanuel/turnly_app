@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'queue_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -62,14 +61,15 @@ class HomeScreen extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const QueueScreen(),
-                      ),
-                    );
+                    // Navigate to QueueScreen
+                    Navigator.pushNamed(context, '/queue');
                   },
-                  child: const Text('Get Started'),
+                  child: 
+                  const Text('Get Started', 
+                  style: TextStyle(
+                      color: Colors.blueAccent,
+                      fontWeight: FontWeight.w600),
+                      ),
                 ),
               ),
 

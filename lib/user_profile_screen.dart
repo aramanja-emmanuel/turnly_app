@@ -23,8 +23,8 @@ class UserModel {
 /// =====================================================
 final userProvider = Provider<UserModel>((ref) {
   return UserModel(
-    fullName: "Alex Rivera",
-    email: "alex.rivera@email.com",
+    fullName: "Aramanja Emmanuel",
+    email: "zoeinemmy@gmail.com",
     memberSince: "2023",
     profileImageUrl: "https://i.pravatar.cc/300",
   );
@@ -147,7 +147,7 @@ class UserProfileScreen extends ConsumerWidget {
 
             _historyTile(
               icon: Icons.local_hospital,
-              title: "Main Medical Center",
+              title: "Ologuneru Health Center, IBADAN",
               subtitle: "Completed • Wait time 45m",
               date: "Oct 18",
             ),

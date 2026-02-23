@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:turnly_app/status_screen.dart';
 
 class QueueScreen extends StatefulWidget {
   const QueueScreen({super.key});
@@ -15,8 +14,6 @@ class _QueueScreenState extends State<QueueScreen> {
   int _position = 0;
   int _estimatedMinutes = 0;
   Timer? _timer;
-
-  
 
   void _joinQueue() {
     final random = Random();
@@ -34,7 +31,6 @@ class _QueueScreenState extends State<QueueScreen> {
   //////////////////////////////////////////////////////////
   // SIMULATE LIVE QUEUE MOVEMENT
   //////////////////////////////////////////////////////////
-
   void _startQueueSimulation() {
     _timer?.cancel();
 
@@ -54,14 +50,8 @@ class _QueueScreenState extends State<QueueScreen> {
   //////////////////////////////////////////////////////////
   // NAVIGATE WHEN IT'S USER'S TURN
   //////////////////////////////////////////////////////////
-
   void _goToStatusScreen() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const StatusScreen(),
-      ),
-    );
+    Navigator.pushReplacementNamed(context, '/status');
   }
 
   @override
@@ -73,7 +63,6 @@ class _QueueScreenState extends State<QueueScreen> {
   //////////////////////////////////////////////////////////
   // UI
   //////////////////////////////////////////////////////////
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,17 +81,13 @@ class _QueueScreenState extends State<QueueScreen> {
   //////////////////////////////////////////////////////////
   // JOIN STATE UI
   //////////////////////////////////////////////////////////
-
   Widget _buildJoinState() {
     return Center(
       child: ElevatedButton(
         onPressed: _joinQueue,
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.blue,
-          padding: const EdgeInsets.symmetric(
-            horizontal: 40,
-            vertical: 16,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -118,7 +103,6 @@ class _QueueScreenState extends State<QueueScreen> {
   //////////////////////////////////////////////////////////
   // QUEUE STATUS UI
   //////////////////////////////////////////////////////////
-
   Widget _buildQueueStatus() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -177,6 +161,3 @@ class _QueueScreenState extends State<QueueScreen> {
     );
   }
 }
-
-//////////////////////////////////////////////////////////
-

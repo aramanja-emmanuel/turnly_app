@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'queue_screen.dart'; // Optional if needed
+import 'user_profile_screen.dart'; // For navigation
 
-/// =============================
-/// QUEUE STATUS ENUM
-/// =============================
 enum QueueStatus { waiting, next, arrived, delayed }
 
-/// =============================
-/// QUEUE MODEL
-/// =============================
 class QueueData {
   final String ticketNumber;
   final String branch;
@@ -38,9 +34,6 @@ class QueueData {
   }
 }
 
-/// =============================
-/// STATE NOTIFIER (Simulated Backend)
-/// =============================
 class QueueNotifier extends StateNotifier<QueueData> {
   QueueNotifier()
       : super(
@@ -48,7 +41,7 @@ class QueueNotifier extends StateNotifier<QueueData> {
             ticketNumber: "#A-248",
             branch: "Downtown Branch",
             counter: 3,
-            status: QueueStatus.next, // simulate “Next”
+            status: QueueStatus.next,
           ),
         );
 
@@ -71,14 +64,10 @@ class QueueNotifier extends StateNotifier<QueueData> {
   }
 }
 
-final queueProvider =
-    StateNotifierProvider<QueueNotifier, QueueData>((ref) {
+final queueProvider = StateNotifierProvider<QueueNotifier, QueueData>((ref) {
   return QueueNotifier();
 });
 
-/// =============================
-/// STATUS SCREEN
-/// =============================
 class StatusScreen extends ConsumerWidget {
   const StatusScreen({super.key});
 
@@ -114,9 +103,7 @@ class StatusScreen extends ConsumerWidget {
             children: [
               const SizedBox(height: 40),
 
-              /// ==========================
-              /// GREEN NOTIFICATION BADGE
-              /// ==========================
+              // Notification Badge
               Container(
                 height: 110,
                 width: 110,
@@ -143,9 +130,6 @@ class StatusScreen extends ConsumerWidget {
 
               const SizedBox(height: 30),
 
-              /// ==========================
-              /// HEADLINE
-              /// ==========================
               Text(
                 queue.status == QueueStatus.next
                     ? "You're Next!"
@@ -162,10 +146,6 @@ class StatusScreen extends ConsumerWidget {
               ),
 
               const SizedBox(height: 6),
-
-              /// ==========================
-              /// SUBHEADING
-              /// ==========================
               Text(
                 "Head to Counter ${queue.counter}",
                 style: const TextStyle(
@@ -176,10 +156,6 @@ class StatusScreen extends ConsumerWidget {
               ),
 
               const SizedBox(height: 18),
-
-              /// ==========================
-              /// DESCRIPTION
-              /// ==========================
               const Text(
                 "Your turn has arrived. Please\nmake your way to the\ndesignated service area now.\nOur representative is ready to\nassist you.",
                 textAlign: TextAlign.center,
@@ -192,9 +168,7 @@ class StatusScreen extends ConsumerWidget {
 
               const SizedBox(height: 30),
 
-              /// ==========================
-              /// TICKET INFO CARD
-              /// ==========================
+              // Ticket Info Card
               Container(
                 width: double.infinity,
                 padding:
@@ -221,9 +195,7 @@ class StatusScreen extends ConsumerWidget {
 
               const Spacer(),
 
-              /// ==========================
-              /// PRIMARY BUTTON
-              /// ==========================
+              // PRIMARY BUTTON
               if (queue.status == QueueStatus.next)
                 SizedBox(
                   width: double.infinity,
@@ -236,6 +208,11 @@ class StatusScreen extends ConsumerWidget {
                           content: Text("Arrival confirmed."),
                         ),
                       );
+
+                      // Navigate to UserProfileScreen to reflect completed service
+                      Future.delayed(const Duration(seconds: 1), () {
+                        Navigator.pushReplacementNamed(context, '/profile');
+                      });
                     },
                     icon: const Icon(Icons.check_circle_outline,
                         size: 20, color: Colors.white),
@@ -259,9 +236,7 @@ class StatusScreen extends ConsumerWidget {
 
               const SizedBox(height: 16),
 
-              /// ==========================
-              /// SECONDARY ACTION
-              /// ==========================
+              // SECONDARY ACTION
               if (queue.status == QueueStatus.next)
                 TextButton(
                   onPressed: () {
