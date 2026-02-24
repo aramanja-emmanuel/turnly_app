@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'main.dart'; // for localNotifications and navigatorKey
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class QueueScreen extends StatefulWidget {
   const QueueScreen({super.key});
@@ -22,36 +24,74 @@ class _QueueScreenState extends State<QueueScreen> {
     setState(() {
       _isInQueue = true;
       _position = startPosition;
-      _estimatedMinutes = _position * 3; // 3 mins per person
+      _estimatedMinutes = _position * 3;
     });
 
     _startQueueSimulation();
   }
 
-  //////////////////////////////////////////////////////////
-  // SIMULATE LIVE QUEUE MOVEMENT
-  //////////////////////////////////////////////////////////
   void _startQueueSimulation() {
     _timer?.cancel();
 
     _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
       if (_position > 1) {
+        int oldPosition = _position;
+
         setState(() {
           _position--;
           _estimatedMinutes = _position * 3;
         });
+
+        // Notify if position changes significantly
+        if ((oldPosition - _position) >= 2) {
+          _showNotification(
+            title: "Queue Update",
+            body: "Your position moved significantly. Now #$_position",
+          );
+        }
+
+        // Notify if user is next
+        if (_position == 1) {
+          _showNotification(
+            title: "You're Next!",
+            body: "Please head to your service counter.",
+          );
+        }
       } else {
         timer.cancel();
-        _goToStatusScreen();
+        Navigator.pushReplacementNamed(context, '/status');
       }
     });
   }
 
-  //////////////////////////////////////////////////////////
-  // NAVIGATE WHEN IT'S USER'S TURN
-  //////////////////////////////////////////////////////////
-  void _goToStatusScreen() {
-    Navigator.pushReplacementNamed(context, '/status');
+  void _requestDelay() {
+    setState(() {
+      _position += 1;
+      _estimatedMinutes += 3;
+    });
+
+    _showNotification(
+      title: "Delay Approved",
+      body: "Your delay is approved. New position #$_position",
+    );
+  }
+
+  void _showNotification({required String title, required String body}) {
+    final androidDetails = AndroidNotificationDetails(
+      'queue_channel',
+      'Queue Notifications',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+
+    final details = NotificationDetails(android: androidDetails);
+
+    localNotifications.show(
+      id: 0, // required named parameter
+      title: title,
+      body: body,
+      notificationDetails: details,
+    );
   }
 
   @override
@@ -60,17 +100,10 @@ class _QueueScreenState extends State<QueueScreen> {
     super.dispose();
   }
 
-  //////////////////////////////////////////////////////////
-  // UI
-  //////////////////////////////////////////////////////////
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text('Queue'),
-        backgroundColor: Colors.blue,
-      ),
+      appBar: AppBar(title: const Text('Queue')),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: _isInQueue ? _buildQueueStatus() : _buildJoinState(),
@@ -78,86 +111,31 @@ class _QueueScreenState extends State<QueueScreen> {
     );
   }
 
-  //////////////////////////////////////////////////////////
-  // JOIN STATE UI
-  //////////////////////////////////////////////////////////
   Widget _buildJoinState() {
     return Center(
       child: ElevatedButton(
         onPressed: _joinQueue,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.blue,
-          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        child: const Text(
-          'Join Queue',
-          style: TextStyle(fontSize: 16),
-        ),
+        child: const Text("Join Queue"),
       ),
     );
   }
 
-  //////////////////////////////////////////////////////////
-  // QUEUE STATUS UI
-  //////////////////////////////////////////////////////////
   Widget _buildQueueStatus() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'You are in queue',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+        Text(
+          "Position: $_position",
+          style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 30),
-        _buildStatusCard(),
+        const SizedBox(height: 16),
+        Text("Estimated wait: $_estimatedMinutes mins"),
+        const SizedBox(height: 20),
+        ElevatedButton(
+          onPressed: _requestDelay,
+          child: const Text("Request Delay"),
+        ),
       ],
-    );
-  }
-
-  Widget _buildStatusCard() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 10,
-            offset: Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Text(
-            'Position #$_position',
-            style: const TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
-              color: Colors.blue,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Estimated wait: $_estimatedMinutes mins',
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.grey,
-            ),
-          ),
-          const SizedBox(height: 20),
-          const CircularProgressIndicator(
-            color: Colors.blue,
-          ),
-        ],
-      ),
     );
   }
 }
